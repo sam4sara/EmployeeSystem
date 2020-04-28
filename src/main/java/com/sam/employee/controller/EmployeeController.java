@@ -1,13 +1,18 @@
 package com.sam.employee.controller;
 
+import com.sam.employee.model.Employee;
 import com.sam.employee.service.EmployeeService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api")
@@ -22,6 +27,17 @@ public class EmployeeController {
     public String createStudent() {
         logger.info("In welcome method");
         return employeeService.welcome();
+    }
+    //Load all students
+    @GetMapping(value = "/employees")
+    public ResponseEntity<List<Employee>> listAllStudents() {
+
+        logger.info("IN listAllTasks method");
+        List<Employee> employeeList = employeeService.findAllEmployees();
+        if (employeeList.isEmpty()) {
+            return new ResponseEntity(HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<List<Employee>>(employeeList, HttpStatus.OK);
     }
 
     /**
@@ -43,16 +59,7 @@ public class EmployeeController {
     *//**
      * Load all the students
      *//*
-    @RequestMapping(value = "/employee", method = RequestMethod.GET)
-    public ResponseEntity<List<EmployeeDTO>> listAllStudents() {
 
-        logger.info("IN listAllTasks METHOD");
-        List<EmployeeDTO> employeeList = employeeServiceImpl.findAll();
-        if (employeeList.isEmpty()) {
-            return new ResponseEntity(HttpStatus.NO_CONTENT);
-        }
-        return new ResponseEntity<List<EmployeeDTO>>(employeeList, HttpStatus.OK);
-    }
 
     *//**
      * Load student by id
