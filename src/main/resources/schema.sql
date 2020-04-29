@@ -1,0 +1,10 @@
+DROP TABLE IF EXISTS employee;
+
+CREATE TABLE employee (
+  employeeID integer not null  PRIMARY KEY,
+  employeeName VARCHAR(250) DEFAULT NULL,
+  age VARCHAR(250) DEFAULT NULL,
+  mobileNumber VARCHAR(250) DEFAULT NULL,
+  salary VARCHAR(250) DEFAULT NULL,
+  city VARCHAR(250) DEFAULT NULL
+);
