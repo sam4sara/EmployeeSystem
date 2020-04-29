@@ -9,9 +9,11 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -28,10 +30,9 @@ public class EmployeeController {
         logger.info("In welcome method");
         return employeeService.welcome();
     }
-    //Load all students
+
     @GetMapping(value = "/employees")
     public ResponseEntity<List<Employee>> listAllStudents() {
-
         logger.info("IN listAllTasks method");
         List<Employee> employeeList = employeeService.findAllEmployees();
         if (employeeList.isEmpty()) {
@@ -39,6 +40,22 @@ public class EmployeeController {
         }
         return new ResponseEntity<List<Employee>>(employeeList, HttpStatus.OK);
     }
+
+    @GetMapping(value = "/employee/{id}")
+    public ResponseEntity<?> getEmployeeByID(@Valid @PathVariable("id") String id) throws Exception {
+        logger.info("IN getEmployee METHOD");
+        Employee employee = employeeService.findEmployeeByID(Integer.parseInt(id));
+        return new ResponseEntity<Employee>(employee, HttpStatus.OK);
+    }
+
+
+
+
+
+
+
+
+
 
     /**
      * Create a new student
@@ -64,12 +81,7 @@ public class EmployeeController {
     *//**
      * Load student by id
      *//*
-    @RequestMapping(value = "/employee/{id}", method = RequestMethod.GET)
-    public ResponseEntity<?> getStudent(@Valid @PathVariable("id") String id) throws Exception {
-        logger.info("IN getStudent METHOD");
-        EmployeeDTO employeeDTO = employeeServiceImpl.findById(id);
-        return new ResponseEntity<EmployeeDTO>(employeeDTO, HttpStatus.OK);
-    }
+
 
     *//**
      * Get all the errors
