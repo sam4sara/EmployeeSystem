@@ -1,6 +1,7 @@
 package com.sam.employee.repository;
 
 import com.sam.employee.model.Employee;
+import com.sam.employee.utility.EmployeeRowMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -16,22 +17,8 @@ public class EmployeeRepository {
     @Autowired
     JdbcTemplate jdbcTemplate;
 
-    class StudentRowMapper implements RowMapper<Employee> {
-        @Override
-        public Employee mapRow(ResultSet rs, int rowNum) throws SQLException {
-            Employee employee = new Employee();
-            employee.setEmployeeID(rs.getInt("employeeID"));
-            employee.setEmployeeName(rs.getString("employeeName"));
-            employee.setAge(rs.getString("age"));
-            employee.setMobileNumber(rs.getString("mobileNumber"));
-            employee.setSalary(rs.getString("salary"));
-            employee.setCity(rs.getString("city"));
-            return employee;
-        }
-    }
-
     public List<Employee> findAll() {
-        return jdbcTemplate.query("select * from employee", new StudentRowMapper());
+        return jdbcTemplate.query("select * from employee", new EmployeeRowMapper());
     }
 
     public Employee findById(long id) {
@@ -39,18 +26,17 @@ public class EmployeeRepository {
                 new BeanPropertyRowMapper<>(Employee.class));
     }
 
-    public int deleteById(Integer employeeID) {
+    public int deleteEmployeeById(Integer employeeID) {
         return jdbcTemplate.update("delete from employee where employeeID=?", new Object[] { employeeID });
     }
 
-    public int insert(Employee employee) {
-        return jdbcTemplate.update("insert into employee (employeeID, employeeName, age, mobileNumber, salary, city) " + "values(?, ?, ?, ?, ?. ?)",
+    public int insertEmployee(Employee employee) {
+        return jdbcTemplate.update("insert into employee (employeeID, employeeName, age, mobileNumber, salary, city) " + "values(?, ?, ?, ?, ?, ?)",
                 new Object[] { employee.getEmployeeID(), employee.getEmployeeName(), employee.getAge(), employee.getMobileNumber(), employee.getSalary(), employee.getCity() });
     }
 
-    /*public int update(Employee employee) {
-        return jdbcTemplate.update("update employee " + " set name = ?, passport_number = ? " + " where id = ?",
-                new Object[] { employee.getName(), employee.employee(), employee.getId() });
-    }*/
-
+    public int updateEmployee(Employee employee) {
+        return jdbcTemplate.update("update employee " + " set employeeName = ?, age = ?,  mobileNumber = ?, salary = ?, city = ? " + " where employeeID = ?",
+                new Object[] { employee.getEmployeeName(), employee.getAge(), employee.getMobileNumber(), employee.getSalary(), employee.getCity(), employee.getEmployeeID() });
+    }
 }

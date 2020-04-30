@@ -26,4 +26,22 @@ public class EmployeeServiceImpl implements  EmployeeService{
     public Employee findEmployeeByID(Integer employeeID) {
         return employeeRepository.findById(employeeID);
     }
+
+    @Override
+    public String deleteEmployeeByID(Integer employeeID) {
+        int status = employeeRepository.deleteEmployeeById(employeeID);
+        return status == 1 ? "Record deleted successfully..." : "Record not deleted...";
+    }
+
+    @Override
+    public String createEmployee(Employee employee) {
+        int status = employeeRepository.insertEmployee(employee);
+        return status == 1 ? "Record inserted successfully..." : "Record not inserted...";
+    }
+
+    @Override
+    public String updateEmployee(Employee employee) {
+        int status = employeeRepository.updateEmployee(employee);
+        return status == 1 ? "Record updated successfully..." : "Record not updated...";
+    }
 }

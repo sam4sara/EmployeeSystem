@@ -6,12 +6,12 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.validation.Errors;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -42,92 +42,45 @@ public class EmployeeController {
     }
 
     @GetMapping(value = "/employee/{id}")
-    public ResponseEntity<?> getEmployeeByID(@Valid @PathVariable("id") String id) throws Exception {
+    public ResponseEntity<?> getEmployeeByID(@Valid @PathVariable("id") String id){
         logger.info("IN getEmployee METHOD");
         Employee employee = employeeService.findEmployeeByID(Integer.parseInt(id));
         return new ResponseEntity<Employee>(employee, HttpStatus.OK);
     }
 
-
-
-
-
-
-
-
-
-
-    /**
-     * Create a new student
-     *//*
-    @RequestMapping(value = "/employee", method = RequestMethod.POST)
-    public ResponseEntity<?> createStudent(@Valid @RequestBody EmployeeDTO employeeDTO,
-                                           UriComponentsBuilder ucBuilder, Errors errors) throws Exception {
-        logger.info("IN createStudent METHOD");
-        if (errors.hasErrors()) {
-            return getErrors(errors);
-        }
-        EmployeeDTO employeeDTONew = employeeServiceImpl.create(employeeDTO);
-        HttpHeaders headers = new HttpHeaders();
-        headers.setLocation(ucBuilder.path("/api/tasks/{id}").buildAndExpand(employeeDTONew.getId()).toUri());
-        return new ResponseEntity<String>("Record inserted succesfully",headers, HttpStatus.CREATED);
-    }
-
-    *//**
-     * Load all the students
-     *//*
-
-
-    *//**
-     * Load student by id
-     *//*
-
-
-    *//**
-     * Get all the errors
-     *//*
-    private ResponseEntity<List<CustomErrorTypeException>> getErrors(Errors errors) {
-        return ResponseEntity.badRequest().body(errors.getAllErrors()
-                .stream()
-                .map(msg -> new CustomErrorTypeException(msg.getDefaultMessage()))
-                .collect(Collectors.toList()));
-    }
-
-
-
-    *//**
-     * Update particular student by id
-     *//*
-    @RequestMapping(value = "/employee/{id}", method = RequestMethod.PUT)
-    public ResponseEntity<?> updateEmployee(@Valid @PathVariable("id") String id,
-                                            @Valid @RequestBody EmployeeDTO employeeDTO, Errors errors) throws Exception {
-        logger.info("IN updateEmployee METHOD");
-        if (errors.hasErrors()) {
-            return getErrors(errors);
-        }
-        if(employeeDTO.getId() == null){
-            throw new CustomErrorTypeException("Unable to update. Employee with id " + id + " not found.");
-        }
-        try {
-            employeeServiceImpl.update(employeeDTO);
-            EmployeeDTO updatedEmployeeDTO = employeeServiceImpl.findById(id);
-            return new ResponseEntity<EmployeeDTO>(updatedEmployeeDTO, HttpStatus.OK);
-        } catch (Exception e) {
-            throw new CustomErrorTypeException("Employee update is not allowed.Please reload your edit student view.");
-        }
-    }
-
-    *//**
-     * Delete student by id
-     *//*
-    @RequestMapping(value = "/employee/{id}", method = RequestMethod.DELETE)
-    public ResponseEntity<?> deleteStudent(@Valid @PathVariable("id") String id) throws Exception {
+    @DeleteMapping(value = "/employee/{id}")
+    public ResponseEntity<String> deleteEmployee(@Valid @PathVariable("id") String employeeID) throws Exception {
         logger.info("IN delete METHOD");
+        String status = "Internal server error";
         try {
-            employeeServiceImpl.delete(id);
-            return new ResponseEntity<>("Record deleted...",HttpStatus.NO_CONTENT);
+            status = employeeService.deleteEmployeeByID(Integer.parseInt(employeeID));
         } catch (Exception e) {
-            throw new CustomErrorTypeException("Employee delete is not allowed.");
+            throw new Exception("Employee delete is not allowed.");
         }
-    }*/
+        return new ResponseEntity<>(status,HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/createEmployee", method = RequestMethod.POST)
+    public ResponseEntity<?> createEmployee(@Valid @RequestBody Employee employee) throws Exception {
+        logger.info("IN create METHOD");
+        String status = employeeService.createEmployee(employee);
+        return new ResponseEntity<>(status,HttpStatus.CREATED);
+    }
+
+    @PutMapping(value = "/updateEmployee/{id}")
+    public ResponseEntity<String> updateEmployee(@Valid @PathVariable("id") String id,
+                                            @Valid @RequestBody Employee employee) throws Exception {
+        String status = "Internal server error";
+        logger.info("IN update METHOD");
+        if(employee.getEmployeeID() == null){
+            throw new Exception("Unable to update. Employee with id " + id + " not found.");
+        }
+        try {
+            status = employeeService.updateEmployee(employee);
+        } catch (Exception e) {
+            throw new Exception("Employee update is not allowed.Please reload your edit student view.");
+        }
+        return new ResponseEntity<>(status, HttpStatus.OK);
+    }
+
 }
