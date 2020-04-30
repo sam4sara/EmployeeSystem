@@ -51,7 +51,7 @@ public class EmployeeController {
         return new ResponseEntity<List<Employee>>(employeeList, HttpStatus.OK);
     }
 
-    @ApiOperation(value = "View employee by id", response = ResponseEntity.class)
+    @ApiOperation(value = "View employee details by id", response = ResponseEntity.class)
     @GetMapping(value = "/employee/{id}")
     public ResponseEntity<?> getEmployeeByID(@ApiParam(value = "Employee id from which employee object will retrieve", required = true) @Valid @PathVariable("id") String id){
         logger.info("IN getEmployee METHOD");
