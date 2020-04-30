@@ -1,11 +1,21 @@
 package com.sam.employee.model;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+
+@ApiModel(description = "All details about the Employee")
 public class Employee {
+    @ApiModelProperty(notes = "The employee ID", required = true)
     private Integer employeeID;
+    @ApiModelProperty(notes = "The employee name")
     private String employeeName;
+    @ApiModelProperty(notes = "The employee age")
     private String age;
+    @ApiModelProperty(notes = "The employeemobile number")
     private String mobileNumber;
+    @ApiModelProperty(notes = "The employee salary")
     private String salary;
+    @ApiModelProperty(notes = "The employee city")
     private String city;
 
     public Employee() { }
